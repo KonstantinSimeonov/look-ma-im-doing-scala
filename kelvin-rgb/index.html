@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kelvins</title>
+		<style>
+			.swatch-container, .swatch {
+				height: 2em;
+			}
+
+			.swatch-container {
+				width: 100%;
+			}
+
+			.swatch {
+				width: 2em;
+			}
+
+			.source {
+				color: darkgreen;
+			}
+
+			.approx {
+				color: darkred;
+			}
+		</style>
+	</head>
+	<body>
+		<table>
+			<thead>
+				<tr>
+					<th>Src</th>
+					<th>Appr</th>
+					<th>Appr K</th>
+					<th>Appr RGB</th>
+					<th>Src Rgb</th>
+				</tr>
+			</thead>
+			<tbody id="approxes">
+			</tbody>
+		</table>
+		<script src="./approxes.js"></script>
+		<script src="./index.js"></script>
+	</body>
+</html>
