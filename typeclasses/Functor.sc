@@ -54,7 +54,7 @@ object Demo extends App {
       if (x > 0)
         Right(Math.sqrt(x))
       else
-        Left("y u give negotive")
+        Left("y u no give positive nomber")
 
     val a = map(incrD)(sqrt(3.14))
     val b = map(incrD)(sqrt(-.5))
