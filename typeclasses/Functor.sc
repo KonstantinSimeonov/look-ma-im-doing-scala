@@ -20,45 +20,51 @@ object Implicits {
     }
   }
 
-  implicit def eitherInstances[L] = {
-    type P[R] = Union2[L, R]
-    new Box[P] {
-      override def map[A, B](fa2b: A => B): P[A] => P[B] = (boxA: Union2[L, A]) => boxA match {
+  implicit def eitherInstances[L] =
+    new Box[({ type P[R] = Union2[L, R] })#P] {
+      override def map[A, B](fa2b: A => B)(boxA: Union2[L, A]): Union2[L, B] = boxA match {
         case Right(x) => Right(fa2b(x))
         case Left(x) => Left[L, B](x)
       }
     }
-  }
 }
 
 object Demo extends App {
   import Implicits._
 
-  def parseInt(str: String): Maybe[Int] = {
-    import scala.util._
-    Try(str.toInt) match {
-      case Success(int) => Just(int)
-      case _ => None
+  def maybeDemo(): Unit = {
+    def parseInt(str: String): Maybe[Int] = {
+      import scala.util._
+      Try(str.toInt) match {
+        case Success(int) => Just(int)
+        case _ => None
+      }
     }
+
+    val incr = ((_: Int) + 1)
+
+    val x = map(incr)(parseInt("123"))
+    val y = map(incr)(parseInt("12a3"))
+    println(s"$x $y")
   }
 
-  val incr = ((_: Int) + 1)
-  var incrD = ((_: Double) + 1)
+  def union2Demo(): Unit = {
+    var incrD = ((_: Double) + 1)
+    def sqrt(x: Double): Union2[String, Double] =
+      if (x > 0)
+        Right(Math.sqrt(x))
+      else
+        Left("y u give negotive")
 
-  val x = map(incr)(parseInt("123"))
-  val y = map(incr)(parseInt("12a3"))
-  println(s"$x $y")
+    val a = map(incrD)(sqrt(3.14))
+    val b = map(incrD)(sqrt(-.5))
 
-  def sqrt(x: Double): Union2[String, Double] =
-    if (x > 0)
-      Right(Math.sqrt(x))
-    else
-      Left("y u give negotive")
+    println(s"$a $b")
+  }
 
-  val a = sqrt(3.14)
-  // DANG
-  eitherInstances[String].map[Double, Double](incrD)(a)
-  val b = sqrt(-.5)
+  println("Using map on Maybe functor")
+  maybeDemo()
+  println("\nUsing map on Union2 functor")
+  union2Demo()
 
-  println(s"$a $b")
 }
